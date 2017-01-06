@@ -34,7 +34,7 @@ describe CommitStatus do
       status.status.must_equal 'success'
     end
 
-    it "returns failure when not found" do
+    it "is failure when not found" do
       failure!
       status.status.must_equal 'failure'
     end
@@ -87,6 +87,13 @@ describe CommitStatus do
     it "returns list" do
       success!
       status.status_list.must_equal [{foo: "bar"}]
+    end
+
+    it "shows that github is waiting for statuses to come when non has arrived yet ... or none are set up" do
+      stub_github_api(url, statuses: [], state: "pending")
+      status.status_list.must_equal(
+        [{state: "pending", description: 'Waiting for reply from CI, ignore if none is set up'}]
+      )
     end
 
     it "returns failure on Reference when not found list for consistent status display" do

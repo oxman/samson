@@ -11,7 +11,11 @@ class CommitStatus
   end
 
   def status_list
-    combined_status.fetch(:statuses).map(&:to_h)
+    list = combined_status.fetch(:statuses).map(&:to_h)
+    if list.empty?
+      list << {state: 'pending', description: 'Waiting for reply from CI, ignore if none is set up'}
+    end
+    list
   end
 
   private
